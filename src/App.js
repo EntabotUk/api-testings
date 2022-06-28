@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from "@apollo/client";
+import { Box } from "@mui/system";
 import Employees from "./data/Employees";
 
 
@@ -15,7 +16,9 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
+      <Box>
       <Employees />
+      </Box>
     </ApolloProvider>
   );
 }

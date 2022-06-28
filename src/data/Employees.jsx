@@ -2,17 +2,19 @@ import React from 'react'
 import { gql, useQuery } from '@apollo/client'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import Typography from '@mui/material/Typography'
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 
 const employees = gql`
 {
-    Public_Employee {
-      id
-      firstName
-      lastName
+  Public_Employee {
+    id
+    firstName
+    lastName
+    department {
+      departmentName
     }
   }
-  
+}
 `;
 
 export default function Employees () {
@@ -29,11 +31,30 @@ export default function Employees () {
         This is an error alert — <strong>check it out!</strong>
         </Alert>
     )
-  return data.Public_Employee.map(({ id, firstName, lastName}) => (
-    <div key={id}>
-        <p>
-            {firstName} | {lastName}
-        </p>
-    </div>
-  ));
+  return (
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>id</TableCell>
+            <TableCell>First name</TableCell>
+            <TableCell>Last name</TableCell>
+            <TableCell>Department</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            data.Public_Employee.map(({ id, firstName, lastName, department }) => (
+              <TableRow>
+                <TableCell>{id}</TableCell>
+                <TableCell >{firstName}</TableCell>
+                <TableCell >{lastName}</TableCell>
+                <TableCell >{department.departmentName}</TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 }
