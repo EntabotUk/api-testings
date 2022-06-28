@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from "@apollo/client";
+import Employees from "./data/Employees";
+
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new HttpLink({
+    uri: 'https://entabot-playground.hasura.app/v1/graphql',
+    headers: {
+      'x-hasura-admin-secret': 'UOXCdo3WAj2nvcgILWrbMVtyaPonBNmX5c4Ui6mgdDDHzo2aHt0IuFpmWDxO4cw6'
+      }
+  })
+})
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <Employees />
+    </ApolloProvider>
   );
 }
 
