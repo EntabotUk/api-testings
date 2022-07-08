@@ -1,38 +1,22 @@
 import React from 'react'
-import { gql, useQuery } from '@apollo/client'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-
-const employees = gql`
-{
-  Public_Employee {
-    id
-    firstName
-    lastName
-    department {
-      departmentName
-    }
-  }
-}
-`;
+import { useMutation, useSubscription } from '@apollo/client'
+import {Button, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { deleteemployee, allemployees} from '../api/queries'
 
 export default function Employees () {
-    const { loading, error, data} = useQuery(employees);
+    const [removeEmployee] = useMutation(deleteemployee);
+    const { loading, error, data} = useSubscription(allemployees);
     if (loading) return (
-        <Alert severity="info">
-        <AlertTitle>Info</AlertTitle>
-        This is an info alert — <strong>check it out!</strong>
-        </Alert>
+        <Skeleton variant="rectangular" animation="wave" height={100}/>
     );
     if (error) return (
-        <Alert severity="error">
-        <AlertTitle>Error</AlertTitle>
-        This is an error alert — <strong>check it out!</strong>
-        </Alert>
+      console.log("ERROR in SigninBox ", { error })
     )
+    const onClick = (id) => {
+      removeEmployee({variables: {id: id}});
+    }
   return (
-    <TableContainer>
+    <TableContainer sx={{backgroundColor: 'primary.main'}}>
       <Table>
         <TableHead>
           <TableRow>
@@ -40,16 +24,24 @@ export default function Employees () {
             <TableCell>First name</TableCell>
             <TableCell>Last name</TableCell>
             <TableCell>Department</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {
             data.Public_Employee.map(({ id, firstName, lastName, department }) => (
-              <TableRow>
+              <TableRow key={id} value={id.value}>
                 <TableCell>{id}</TableCell>
                 <TableCell >{firstName}</TableCell>
                 <TableCell >{lastName}</TableCell>
                 <TableCell >{department.departmentName}</TableCell>
+                <TableCell>
+                  <Button variant="contained" color="error"
+                    onClick={() => onClick(id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           }
